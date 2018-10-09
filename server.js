@@ -1,6 +1,8 @@
 const express = require('express')
 const next = require('next')
 var dotenv = require('dotenv');
+const api = require('./operations/get-item')
+const logsapi = require('./operations/fetch-logs')
 
 
 const dev = process.env.NODE_ENV !== 'production'
@@ -18,6 +20,18 @@ app.prepare()
     const actualPage = '/post'
     const queryParams = { id: req.params.id } 
     app.render(req, res, actualPage, queryParams)
+})
+
+// Serve the item webpage with next.js as the renderer
+server.get('/logs', (req, res) => {
+  const itemData = logsapi.getLogs()
+  app.render(req, res, '/logs', { itemData })
+})
+
+// When rendering client-side, we will request the same data from this route
+server.get('/_data/logs', (req, res) => {
+  const itemData = api.getItem()
+  res.json(itemData)
 })
 
   server.get('*', (req, res) => {
