@@ -1,15 +1,26 @@
-import Layout from './components/Layout.js'
+import Layout from '../components/MyLayout.js'
 import Link from 'next/link'
-import fetch from 'isomorphic-unfetch'
+import Main from '../components'
 
-const Index = (props) => (
+
+function getLogs () {
+  return [
+    { id: '1', title: 'ABC'},
+    { id: '2', title: 'HHHH'},
+    { id: '2', title: 'JJJJJ'},
+  ]
+}
+
+
+export default () => (
   <Layout>
-    <h1>Batman TV Shows</h1>
+    <h1>My Logs</h1>
+    <Main />
     <ul>
-      {props.shows.map(({show}) => (
-        <li key={show.id}>
-          <Link as={`/p/${show.id}`} href={`/post?id=${show.id}`}>
-            <a>{show.name}</a>
+      {getLogs().map((log) => (
+        <li key={log.id}>
+          <Link href={`/l/${log.id}`}>
+            <a>{log.title}</a>
           </Link>
         </li>
       ))}
@@ -39,16 +50,3 @@ const Index = (props) => (
     `}</style>
   </Layout>
 )
-
-Index.getInitialProps = async function() {
-  const res = await fetch('https://api.tvmaze.com/search/shows?q=batman')
-  const data = await res.json()
-
-  console.log(`Show data fetched. Count: ${data.length}`)
-
-  return {
-    shows: data
-  }
-}
-
-export default Index
